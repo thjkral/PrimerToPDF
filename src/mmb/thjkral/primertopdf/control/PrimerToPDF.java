@@ -8,7 +8,7 @@
  */
 package mmb.thjkral.primertopdf.control;
 
-import com.itextpdf.text.*;
+import mmb.thjkral.primertopdf.model.*;
 
 
 /**
@@ -41,12 +41,18 @@ public class PrimerToPDF {
         - Output
         */
         
-        String input = "";
-        String output = "";
-        
         CLI cli = new CLI();
         cli.parse(args);
         
+//        System.out.println("--TEST--\nIn= "
+//                + cli.input
+//                + "\nout= "
+//                + cli.output);
+        
+        
+        ParseInput parse = new ParseInput();
+//        parse.readLines(cli.input);
+            
     }
     
 }

@@ -12,7 +12,7 @@ package mmb.thjkral.primertopdf.model;
  * 
  * @author tom
  */
-public class PrimerPair extends Template{
+public class PrimerPair{
     
     int pair_no;
     private String sequenceForward;
