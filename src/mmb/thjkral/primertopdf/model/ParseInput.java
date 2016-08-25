@@ -63,8 +63,7 @@ public class ParseInput {
             }
             
         } catch (Exception e) {
-//                System.out.println("ERROR while reading: " + e.getMessage());
-            e.printStackTrace();
+                System.out.println("ERROR while reading: " + e.getMessage());
         }
             
         
@@ -122,22 +121,101 @@ public class ParseInput {
         
         for (int i = 0; i < highestCount; i++) {
             
-            PrimerPair pp = new PrimerPair();
+            PrimerPair pp = new PrimerPair(i);
             
-            String seqs = String.format(regexSeqs, i);
+            String seq = String.format(regexSeqs, i);
             String gc = String.format(regexGc, i);
-            Pattern pSeqs = Pattern.compile(seqs);
-            Matcher mSeqs = pSeqs.matcher(rawString);
+            String tm = String.format(regexTm, i);
+            String penalty = String.format(regexPenalties, i);
+            String product = String.format(regexProductSize, i);
             
-            while (mSeqs.find()) {
-                System.out.println(mSeqs.group(2));
+            Pattern pSeq = Pattern.compile(seq); // seq
+            Matcher mSeq = pSeq.matcher(rawString);            
+            Pattern pGc = Pattern.compile(gc); //GC
+            Matcher mGc = pGc.matcher(rawString);
+            Pattern pTm = Pattern.compile(tm); //TM
+            Matcher mTm = pTm.matcher(rawString);
+            Pattern pPenalty = Pattern.compile(penalty); //penalty
+            Matcher mPenalty = pPenalty.matcher(rawString);
+            Pattern pProduct = Pattern.compile(product); //productsize
+            Matcher mProduct = pProduct.matcher(rawString);
+            
+            
+            while (mSeq.find()) {//get sequences
+                if (mSeq.group(1).equals("LEFT")) {
+                    pp.setSequenceForward(mSeq.group(3));
+                }
+                if (mSeq.group(1).equals("RIGHT")) {
+                    pp.setSequenceReverse(mSeq.group(3));
+                }
+                if (mSeq.group(1).equals("INTERNAL")) {
+                    pp.setSequenceInternal(mSeq.group(3));
+                }
             }
+            
+            
+            while (mGc.find()) {//get GC
+                if (mGc.group(1).equals("LEFT")) {
+                    pp.setGCcontent_f(Double.parseDouble(mGc.group(3)));
+                }
+                if (mGc.group(1).equals("RIGHT")) {
+                    pp.setGCcontent_r(Double.parseDouble(mGc.group(3)));
+                }
+                if (mGc.group(1).equals("INTERNAL")) {
+                    pp.setGCcontent_i(Double.parseDouble(mGc.group(3)));
+                }
+            }
+            
+            
+            while (mTm.find()) {//get Tm
+                if (mTm.group(1).equals("LEFT")) {
+                    pp.setMeltingTemp_f(Double.parseDouble(mTm.group(3)));
+                }
+                if (mTm.group(1).equals("RIGHT")) {
+                    pp.setMeltingTemp_r(Double.parseDouble(mTm.group(3)));
+                }
+                if (mTm.group(1).equals("INTERNAL")) {
+                    pp.setMeltingTemp_i(Double.parseDouble(mTm.group(3)));
+                }
+            }
+            
+            
+            while (mPenalty.find()) {//get penalties
+                if (mPenalty.group(1).equals("LEFT")) {
+                    pp.setPenalty_f(Double.parseDouble(mPenalty.group(3)));
+                }
+                if (mPenalty.group(1).equals("RIGHT")) {
+                    pp.setPenalty_r(Double.parseDouble(mPenalty.group(3)));
+                }
+                if (mPenalty.group(1).equals("INTERNAL")) {
+                    pp.setPenalty_i(Double.parseDouble(mPenalty.group(3)));
+                }
+                if (mPenalty.group(1).equals("PAIR")) {
+                    pp.setPenalty_p(Double.parseDouble(mPenalty.group(3)));
+                }
+            }
+            
+            
+            while (mProduct.find()) {//get product size
+                pp.setProductSize(Integer.parseInt(mProduct.group(2)));
+            }
+            
+            
+            System.out.println(pp.toString());
             
         }
         
         
     }
-
+    
+    
+    /**
+     * Determines how many primer pairs one entry has.
+     * Used for iteration with for-loop
+     * 
+     * @param rawString
+     * @return The number of primer pairs
+     */
     private int calcHighestNumber(String rawString) {
         
         int highestNumber = 0;
