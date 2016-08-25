@@ -25,6 +25,8 @@ import java.util.regex.Pattern;
 public class ParseInput {
     
     MakePDF makepdf = new MakePDF();
+    
+    
     Document doc = makepdf.makeDocument();
     
     /**
@@ -61,7 +63,8 @@ public class ParseInput {
             }
             
         } catch (Exception e) {
-                System.out.println("ERROR while reading: " + e.getMessage());
+//                System.out.println("ERROR while reading: " + e.getMessage());
+            e.printStackTrace();
         }
             
         
@@ -104,10 +107,55 @@ public class ParseInput {
             
         }
           
-        System.out.println(header.toString());
+//        System.out.println(header.toString());
         doc = makepdf.addHeader(header, doc);
         
+        int count = 0;
         
+        String regexSeqs = "PRIMER_([LEFT|RIGHT|INTERNAL]+)_(%s)_SEQUENCE=([ATCGN]+)";
+        String regexGc = "PRIMER_([LEFT|RIGHT|INTERNAL]+)_(%s)_GC_PERCENT=(.*)\\n";
+        String regexTm = "PRIMER_([LEFT|RIGHT|INTERNAL]+)_(%s)_TM=(.*)\\n";
+        String regexPenalties = "PRIMER_([LEFT|RIGHT|INTERNAL|PAIR]+)_(%s)_PENALTY=(.*)\\n";
+        String regexProductSize = "PRIMER_PAIR_(%s)_PRODUCT_SIZE=([\\d]+)";
+        
+        int highestCount = calcHighestNumber(rawString) + 1;
+        
+        for (int i = 0; i < highestCount; i++) {
+            
+            PrimerPair pp = new PrimerPair();
+            
+            String seqs = String.format(regexSeqs, i);
+            String gc = String.format(regexGc, i);
+            Pattern pSeqs = Pattern.compile(seqs);
+            Matcher mSeqs = pSeqs.matcher(rawString);
+            
+            while (mSeqs.find()) {
+                System.out.println(mSeqs.group(2));
+            }
+            
+        }
+        
+        
+    }
+
+    private int calcHighestNumber(String rawString) {
+        
+        int highestNumber = 0;
+        
+        Pattern p = Pattern.compile("PRIMER_PAIR_([\\d]+)_PRODUCT_SIZE");
+        Matcher m = p.matcher(rawString);
+        
+        while (m.find()) {
+            
+            int currNum = Integer.parseInt(m.group(1));
+//            System.out.println(currNum);
+            
+            if (currNum >= highestNumber) {
+                highestNumber = currNum;
+            }
+        }
+        
+        return highestNumber;
     }
     
     

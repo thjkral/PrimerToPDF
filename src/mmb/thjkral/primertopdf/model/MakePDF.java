@@ -35,7 +35,7 @@ public class MakePDF {
     }
     
     /**
-     * Closes teh PDF file.
+     * Closes the PDF file.
      * @param doc
      */
     public void close (Document doc) {

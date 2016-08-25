@@ -51,7 +51,7 @@ public class PrimerToPDF {
         
         
         ParseInput parse = new ParseInput();
-//        parse.readLines(cli.input);
+        parse.readLines(cli.input);
             
     }
     
